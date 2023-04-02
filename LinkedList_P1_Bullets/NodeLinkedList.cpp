@@ -25,7 +25,7 @@ int Search(node *head, int element);// para buscar un nodo con cierto elemento
 void Traverse(node *head); //para printear la lista
 int Searchbullet(node *head, int element);// Para el buscar el dato int de la lista en x posicion
 
-int Bullets(int c){
+node* Bullets(int c, node* BulletList){
     int BulletsSize=c;
     node *BulletsList= new node;
     BulletsList= Create(22);
@@ -34,11 +34,11 @@ int Bullets(int c){
     }
     Traverse(BulletsList);
     std::cout<<"La cantidad de balas es: " <<BulletsSize << std::endl;
-    return 0;
+    return BulletsList;
 }
 node *RecoveryBullets(int e,node* RecoveryList,int d){
     if(RecoveryList==nullptr){
-        RecoveryList= InsertAtBeg(RecoveryList,e/d);
+        RecoveryList= Create(e/d);
         printf("Se entro al if, se recupero la bala y fue \n guardada como la primera de las balas recuperdas \n");
         return RecoveryList;
     }else{
@@ -46,13 +46,25 @@ node *RecoveryBullets(int e,node* RecoveryList,int d){
         printf("Se recupero la bala y fue agregada a \n la ultima posicion de la lista de balas recuperadas \n");
     }
 }
-void addBullets(node*  BulletList,int e){
-    BulletList=InsertAtEnd(BulletList,e);
+node *addBullets(node*  BulletList,node* RecoveryList){
+    cout<<"entro a addBullets \n";
+    if(Searchbullet(RecoveryList,0) != NULL){
+        cout<<"entro al if \n";
+        BulletList=InsertAtEnd(BulletList,Searchbullet(RecoveryList,0));
+        RecoveryList=DeleteAtBeg(RecoveryList);
+        //Traverse(BulletList);
+        //Traverse(RecoveryList);
+        return RecoveryList;
+
+    }else{
+        cout <<"No hay balas en RecoveryList";
+    }
 
 }
 
 int main()
 {
+    /*
     node *head1 = new node;
     // Creating a head node of value 81
     head1 = Create(81);
@@ -87,25 +99,33 @@ int main()
     cout << "CONCATENATED: ";
     Traverse(head1);
     cout<<"\n";
+    */
+
+    //La dificultad va a ser el numero por el cual se divida el damage inicial de la bala, esto para que la bala recuperada haga menor damage
+    int d= 1;
+
     //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
-    Bullets(30);
+    node *BulletsList= nullptr;
+    BulletsList=Bullets(30,BulletsList);
+
     // Para crear la Lista de RecoveryList, las balas recuperadas
     // Se necesita el nullprt para que la primer bala recuperada se guarde correctamente
     node *RecoveryList= nullptr;
-    //La dificultad va a ser el numero por el cual se divida el damage inicial de la bala, esto para que la bala recuperada haga menor damage
-    int d= 1;
     //Se necesita el = para que una vez que entre por primera vez se pueda guardar globalmente +la variable y no siga entrando a cambiar la primera posicion de balas recuperdas
     RecoveryList=RecoveryBullets(20,RecoveryList,d);
     //Despues que se entra por primera vez se puede usar de la siguente manera y no hay problemas
     RecoveryBullets(21,RecoveryList,d);
     RecoveryBullets(22,RecoveryList,d);
     RecoveryBullets(23,RecoveryList,d);
+    cout<<" \n Lista de balas y balas recuperadas \n";
+    Traverse(BulletsList);
     Traverse(RecoveryList);
-    Search(RecoveryList,0);
-    Search(RecoveryList,2);
+    cout<<" \n Lista de balas y balas recuperdas luego de a;adir algunas recuperadas a las balas principales \n";
     int numero= Searchbullet(RecoveryList,3);
+    RecoveryList= addBullets(BulletsList,RecoveryList);
+    Traverse(BulletsList);
+   Traverse(RecoveryList);
 
-    cout<< "el da;o de la bala es: " << numero ;
     cout<<"\n";
     return 0;
 }
