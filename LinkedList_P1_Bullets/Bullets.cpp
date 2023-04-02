@@ -1,5 +1,4 @@
 #include <iostream>
-//#include "NodeLinkedList.h"
 #include "NodeLinkedList.cpp"
 using std::cin;
 using std::cout;
@@ -56,18 +55,20 @@ int shotBullet(node* BulletsList){
 int main(){
     //La dificultad va a ser el numero por el cual se divida el damage inicial de la bala, esto para que la bala recuperada haga menor damage
     int d= 1;
-
     //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
     node *BulletsList= nullptr;
     BulletsList=Bullets(30,BulletsList);
-
     // Para crear la Lista de RecoveryList, las balas recuperadas
     // Se necesita el nullprt para que la primer bala recuperada se guarde correctamente
     node *RecoveryList= nullptr;
     //Se necesita el = para que una vez que entre por primera vez se pueda guardar globalmente +la variable y no siga entrando a cambiar la primera posicion de balas recuperdas
     RecoveryList=RecoveryBullets(20,RecoveryList,d);
+    /*
+    Las lineas anteriores son importantes para crear las listas por primera vez, luego de esto las funciones no tienen problemas
+    */
+
     //Despues que se entra por primera vez se puede usar de la siguente manera y no hay problemas
-    RecoveryBullets(21,RecoveryList,d);
+    RecoveryBullets(21,RecoveryList,d);// Se necesita el dato que sera el da;o, la lista de balas recuperdas y la dificultad respectivamente
     RecoveryBullets(22,RecoveryList,d);
     RecoveryBullets(23,RecoveryList,d);
     cout<<" \n Lista de balas y balas recuperadas \n";
@@ -75,7 +76,7 @@ int main(){
     Traverse(RecoveryList);
     cout<<" \n Lista de balas y balas recuperdas luego de a;adir algunas recuperadas a las balas principales \n";
     int numero= Searchbullet(RecoveryList,3);
-    addBullets(BulletsList,RecoveryList);
+    addBullets(BulletsList,RecoveryList);// se necesita la lista de las balas principales y las balas recuperadas
     Traverse(BulletsList);
    Traverse(RecoveryList);
    shotBullet(BulletsList);
