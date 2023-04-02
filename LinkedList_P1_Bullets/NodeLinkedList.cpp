@@ -28,7 +28,7 @@ int Searchbullet(node *head, int element);// Para el buscar el dato int de la li
 node* Bullets(int c, node* BulletList){
     int BulletsSize=c;
     node *BulletsList= new node;
-    BulletsList= Create(22);
+    BulletsList= Create(999);
     for(int i=0;i<=c;i++){
         BulletsList=InsertAtEnd(BulletsList, 23+i); 
     }
@@ -38,7 +38,8 @@ node* Bullets(int c, node* BulletList){
 }
 node *RecoveryBullets(int e,node* RecoveryList,int d){
     if(RecoveryList==nullptr){
-        RecoveryList= Create(e/d);
+        RecoveryList= Create(999);
+        RecoveryList=InsertAtEnd(RecoveryList,e/d);
         printf("Se entro al if, se recupero la bala y fue \n guardada como la primera de las balas recuperdas \n");
         return RecoveryList;
     }else{
@@ -46,20 +47,25 @@ node *RecoveryBullets(int e,node* RecoveryList,int d){
         printf("Se recupero la bala y fue agregada a \n la ultima posicion de la lista de balas recuperadas \n");
     }
 }
-node *addBullets(node*  BulletList,node* RecoveryList){
+void addBullets(node*  BulletList,node* RecoveryList){
     cout<<"entro a addBullets \n";
-    if(Searchbullet(RecoveryList,0) != NULL){
+    if(Searchbullet(RecoveryList,1) != NULL){
         cout<<"entro al if \n";
-        BulletList=InsertAtEnd(BulletList,Searchbullet(RecoveryList,0));
-        RecoveryList=DeleteAtBeg(RecoveryList);
-        //Traverse(BulletList);
-        //Traverse(RecoveryList);
-        return RecoveryList;
+        BulletList=InsertAtEnd(BulletList,Searchbullet(RecoveryList,1));
+        RecoveryList=DeleteAtPos(RecoveryList,2);
 
     }else{
         cout <<"No hay balas en RecoveryList";
     }
 
+}
+int shotBullet(node* BulletsList){
+    if(Searchbullet(BulletsList,1)!= NULL){
+        int bullet=BulletsList->next->data;
+        cout<<"el damage de la bala es"<< bullet;
+        BulletsList=DeleteAtPos(BulletsList,2);
+        return bullet;
+    }else{cout<<"No quedan balas";return 0;}
 }
 
 int main()
@@ -122,8 +128,12 @@ int main()
     Traverse(RecoveryList);
     cout<<" \n Lista de balas y balas recuperdas luego de a;adir algunas recuperadas a las balas principales \n";
     int numero= Searchbullet(RecoveryList,3);
-    RecoveryList= addBullets(BulletsList,RecoveryList);
+    addBullets(BulletsList,RecoveryList);
     Traverse(BulletsList);
+   Traverse(RecoveryList);
+   shotBullet(BulletsList);
+   cout<<" \n Bala disparada \n ";
+   Traverse(BulletsList);
    Traverse(RecoveryList);
 
     cout<<"\n";
