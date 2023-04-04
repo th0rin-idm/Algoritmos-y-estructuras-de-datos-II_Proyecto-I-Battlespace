@@ -11,7 +11,8 @@ int main(int argc, char* args[])
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     // Cargar imagen
-    SDL_Surface* surface = IMG_Load("/home/vboxuser/projects/sdl2_demo/image.png");
+    //SDL_Surface* surface = IMG_Load("/home/vboxuser/projects/sdl2_demo/image.png");
+    SDL_Surface* surface = IMG_Load("/home/nacho/Proyecto-I-Battlespace/sdl2_demo/image.png");
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
 

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include </home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/alien.hpp>
 
 /*const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;*/
@@ -15,6 +16,7 @@ public:
         texture_alien = SDL_CreateTextureFromSurface(renderer, skin_alien);
         SDL_FreeSurface(skin_alien);
     }
+    int health=100;
     
     void move() {
         rect_alien.x -= 15;

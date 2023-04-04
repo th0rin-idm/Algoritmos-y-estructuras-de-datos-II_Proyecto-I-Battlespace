@@ -33,6 +33,7 @@ public:
         return texture;
     }
 
+
 private:
     SDL_Surface* surface;
     SDL_Texture* texture;

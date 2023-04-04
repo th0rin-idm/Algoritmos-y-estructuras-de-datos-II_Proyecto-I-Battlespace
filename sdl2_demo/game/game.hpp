@@ -6,9 +6,17 @@
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
-#include "/home/vboxuser/projects/sdl2_demo/mobs/ship.hpp"
-#include "/home/vboxuser/projects/sdl2_demo/mobs/bullet.hpp"
-#include "/home/vboxuser/projects/sdl2_demo/mobs/alien.hpp"
+//#include "/home/vboxuser/projects/sdl2_demo/mobs/ship.hpp"
+//#include "/home/vboxuser/projects/sdl2_demo/mobs/bullet.hpp"
+//#include "/home/vboxuser/projects/sdl2_demo/mobs/alien.hpp"
+
+#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/ship.hpp"
+#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/bullet.hpp"
+#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/alien.hpp"
+
+bool CheckCollision(SDL_Rect a, SDL_Rect b) {
+  return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
+}
 
 //int main(int argc, char* args[]) {
 void game(){
@@ -73,13 +81,27 @@ void game(){
             alien.draw(renderer);
         }
 
+
+
         for (auto& bullet : bullets) {
             bullet.move();
             bullet.draw(renderer);
+            //verifica si una bala colisiono con un alien
+            for (auto& bullet : bullets) {
+                for (auto& aliens : aliens) {
+                    if (CheckCollision(bullet.getRect(), aliens.getRect())) {
+                    // La bala ha golpeado un alien
+                    // Hacer algo aquí, como reducir la vida del alien, etc.
+                    printf("La bala golpeo un alien");
+      }
+    }
+  }
         }
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {
             return bullet.isOffScreen();
-        }), bullets.end());     
+        }), bullets.end());
+
+
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
