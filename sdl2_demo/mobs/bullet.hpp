@@ -11,6 +11,7 @@ class Bullet {
 public:
     Bullet(SDL_Renderer* renderer, int x, int y) {
         rect = {x, y, 16, 16};
+        recty=y;
         surface = IMG_Load("sprites/bullet.png");
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
@@ -31,6 +32,9 @@ public:
     SDL_Rect getRect() const {
         return rect;
     }
+     int getRecty() const {
+        return recty;
+    }
     
     SDL_Texture* getTexture() const {
         return texture;
@@ -40,6 +44,8 @@ private:
     SDL_Surface* surface;
     SDL_Texture* texture;
     SDL_Rect rect;
+    int recty;
+    int dmg;
 };
 
 
