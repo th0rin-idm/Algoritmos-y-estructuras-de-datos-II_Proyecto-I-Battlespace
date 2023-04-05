@@ -6,6 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
+using std::cin;
+using std::cout;
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/ship.hpp"
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/bullet.hpp"
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/alien.hpp"
@@ -23,9 +25,8 @@ bool collision(std::vector<Bullet>& bullets, std::vector<Alien>& aliens) {
         for (int j = 0; j < aliens.size(); j++) {
             if (CheckCollision(bullets[i].getRect(),aliens[j].getRect())) {
                 printf("La bala golpeo un alien");
-                //bullets.erase(bullets.begin());
+                cout<<"la bala golpeo un alien";
                 bullets.erase(bullets.begin()+i);
-                //delete bullets[i].getTexture();
                 aliens.erase(aliens.begin()+j);
                 return true;
             }
@@ -59,7 +60,7 @@ void game(){
    for (int i = 0; i < n; i++) {
         int randomy = rand() % 447 + 2; // Genera un número aleatorio entre 1 y 100
         lista[i] = randomy;
-        aliens.emplace_back(renderer, SCREEN_WIDTH, lista[i]);
+        aliens.emplace_back(renderer, SCREEN_WIDTH+(i*15), lista[i]);
     }
     
     bool replay=false;
