@@ -16,6 +16,7 @@ public:
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
+    int dmg=80;
     
     void move() {
         rect.x += 15;
@@ -45,7 +46,6 @@ private:
     SDL_Texture* texture;
     SDL_Rect rect;
     int recty;
-    int dmg;
 };
 
 
