@@ -11,7 +11,7 @@ using std::cout;
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/ship.hpp"
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/bullet.hpp"
 //#include "/home/vboxuser/projects/sdl2_demo/mobs/alien.hpp"
-//#include "/home/nacho/Proyecto-I-Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
+#include "/home/nacho/Proyecto-I-Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
 #include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/ship.hpp"
 #include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/bullet.hpp"
 #include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/alien.hpp"
@@ -25,10 +25,8 @@ bool CheckCollision(SDL_Rect a, SDL_Rect b) {
 bool collision(std::vector<Bullet>& bullets, std::vector<Alien>& aliens) {
     for(int i=0;i < bullets.size();i++){
         for (int j = 0; j < aliens.size(); j++) {
-            if (CheckCollision(bullets[i].getRect(),aliens[j].getRect())) {
-                printf("La bala golpeo un alien");
+            if (CheckCollision(bullets[i].getRect(),aliens[j].getRect())) { 
                 int damage=bullets[i].dmg;
-                cout<<"la bala golpeo un alien";
                 bullets.erase(bullets.begin()+i);
                 aliens[j].health -= damage;
                 if(aliens[j].health <= 0){
@@ -64,6 +62,16 @@ void game(){
     int bullets_count = 0;
     int refract = 1;
 
+    int d =1; //variable de la dificultad por ahora
+    //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
+    node *BulletsList= nullptr;
+    BulletsList=createBullets(20/d,BulletsList,d);
+    // Para crear la Lista de RecoveryList, las balas recuperadas
+    // Se necesita el nullprt para que la primer bala recuperada se guarde correctamente
+    node *RecoveryList= nullptr;
+    //Se necesita el = para que una vez que entre por primera vez se pueda guardar globalmente +la variable y no siga entrando a cambiar la primera posicion de balas recuperdas
+    RecoveryList=RecoveryBullets(0,RecoveryList,d);
+
    for (int i = 0; i < n; i++) {
         int randomy = rand() % 447 + 2; // Genera un número aleatorio entre 1 y 100
         lista[i] = randomy;
@@ -85,6 +93,7 @@ void game(){
                             ship.moveUp();
                             if(bullets_count < n*200 && bullets.size()<refract){
                                 bullets_count++;
+                                //shotBullet(BulletsList);
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
                                     ship.getRect().y + 32);
@@ -94,6 +103,7 @@ void game(){
                             ship.moveDown();
                             if(bullets_count < n*200 && bullets.size()<refract){
                                 bullets_count++;
+                                //shotBullet(BulletsList);
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
                                     ship.getRect().y + 32);
@@ -147,7 +157,10 @@ void game(){
                     }
                     }
                     if(bullet.isOffScreen()){
-                    bullets.erase(bullets.begin());
+                    //RecoveryBullets(bullet.dmg,RecoveryList,d);
+                    //bullets.erase(bullets.begin());
+                    //addBullets(BulletsList,RecoveryList);
+
         }
         }
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {

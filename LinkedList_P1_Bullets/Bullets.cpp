@@ -4,7 +4,7 @@ using std::cin;
 using std::cout;
 
 //Para crear la lista de las balas principales
-node* Bullets(int c, node* BulletList,int d){
+node* createBullets(int c, node* BulletList,int d){
     int BulletsSize=c;
     node *BulletsList= new node;
     BulletsList= Create(999);
@@ -20,7 +20,7 @@ node* Bullets(int c, node* BulletList,int d){
 node *RecoveryBullets(int e,node* RecoveryList,int d){
     if(RecoveryList==nullptr){
         RecoveryList= Create(999);
-        RecoveryList=InsertAtEnd(RecoveryList,e/d);
+        //RecoveryList=InsertAtEnd(RecoveryList,e/d);
         printf("Se entro al if, se recupero la bala y fue \n guardada como la primera de las balas recuperdas \n");
         return RecoveryList;
     }else{
@@ -57,7 +57,7 @@ int main(){
     int d= 1;
     //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
     node *BulletsList= nullptr;
-    BulletsList=Bullets(30,BulletsList,d);
+    BulletsList=createBullets(30,BulletsList,d);
     // Para crear la Lista de RecoveryList, las balas recuperadas
     // Se necesita el nullprt para que la primer bala recuperada se guarde correctamente
     node *RecoveryList= nullptr;
