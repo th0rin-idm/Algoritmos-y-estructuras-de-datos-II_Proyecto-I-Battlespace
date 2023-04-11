@@ -8,16 +8,18 @@
 #include <algorithm>
 using std::cin;
 using std::cout;
-
+/*
 #include </home/vboxuser/Downloads/Battlespace/mobs/alien.hpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/bullet.hpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/ship.hpp>
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/spawner.hpp>
-
-/*#include "/home/nacho/Proyecto-I-Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
-#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/ship.hpp"
-#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/alien.hpp"*/
+*/
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/alien.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/bullet.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/spawner.hpp>
 
 //Para comprobar que hay colision entre la bala y alien
 bool CheckCollision(SDL_Rect a, SDL_Rect b) {
