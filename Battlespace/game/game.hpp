@@ -9,7 +9,7 @@
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
-#include "/home/nacho/Proyecto-I-Battlespace/Battlespace/third-party/Firmata-2.5.9/Firmata.h"
+//#include "/home/nacho/Proyecto-I-Battlespace/Battlespace/third-party/Firmata-2.5.9/Firmata.h"
 
 #include "controller.cpp"
 using std::cin;
@@ -96,9 +96,17 @@ void game(int n){
     
     bool replay=false;
     Uint32 lastAlienTime= SDL_GetTicks();
-    Control();
 
     printf("puerto");
+    serial::Serial my_serial("/dev/ttyUSB0",9600,serial::Timeout::simpleTimeout(3000));
+    if(my_serial.isOpen()){
+        std::cout<<"port opened succesfully"<<std::endl;
+        printf("puerto abierto");
+    }else{
+        std::cout<<"port failed to open"<<std::endl;
+        printf("fallo al abrir el puerto");
+    }
+    printf("puerto2");
     serial::Serial my_serial("/dev/ttyUSB0",9600,serial::Timeout::simpleTimeout(3000));
     if(my_serial.isOpen()){
         std::cout<<"port opened succesfully"<<std::endl;
