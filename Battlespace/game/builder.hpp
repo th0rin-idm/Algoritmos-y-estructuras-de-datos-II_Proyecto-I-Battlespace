@@ -4,21 +4,21 @@
 #include <SDL2/SDL.h>
 //#include <SDL2/SDL_image.h>
 #include <iostream>
-//#include </home/vboxuser/Downloads/Battlespace/game/window.hpp>
-#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/game/window.hpp>
+#include </home/vboxuser/Downloads/Battlespace/game/window.hpp>
+//#include </home/nacho/Proyecto-I-Battlespace/sdl2_demo/game/game.hpp>
 
 int builder(){
     try {
         Window window;
-        /*
+        
         SDL_Texture* buttonTexture1 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/easy.png");
         SDL_Texture* buttonTexture2 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/normal.png");
         SDL_Texture* buttonTexture3 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/hard.png");
+        /*
+        SDL_Texture* buttonTexture1 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/sprites/easy.png");
+        SDL_Texture* buttonTexture2 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/sprites/normal.png");
+        SDL_Texture* buttonTexture3 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/sprites/hard.png");
         */
-        SDL_Texture* buttonTexture1 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/easy.png");
-        SDL_Texture* buttonTexture2 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/normal.png");
-        SDL_Texture* buttonTexture3 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/hard.png");
-        
 
 
         if (!buttonTexture1 || !buttonTexture2 || !buttonTexture3) {
