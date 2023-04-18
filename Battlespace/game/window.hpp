@@ -6,7 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <iostream>
 //#include </home/vboxuser/Downloads/Battlespace/game/game.hpp>
-#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/game/game.hpp>
+//#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/game/game.hpp>
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/game/game.hpp>
 
 /*const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;*/

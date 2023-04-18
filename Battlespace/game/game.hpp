@@ -1,11 +1,17 @@
 #ifndef game_hpp
 #define game_hpp
 
+//#include "/home/nacho/Proyecto-I-Battlespace/Battlespace/third-party/include/serial/serial.h"
+#include "third-party/include/serial/serial.h"
+//#include <Arduino.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
+#include "/home/nacho/Proyecto-I-Battlespace/Battlespace/third-party/Firmata-2.5.9/Firmata.h"
+
+#include "controller.cpp"
 using std::cin;
 using std::cout;
 /*
@@ -15,12 +21,18 @@ using std::cout;
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/spawner.hpp>
 */
+/*
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/alien.hpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/bullet.hpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/spawner.hpp>
-
+*/
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/mobs/alien.hpp>
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/mobs/bullet.hpp>
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp>
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
+#include </home/nacho/Proyecto-I-Battlespace/Battlespace/mobs/spawner.hpp>
 //Para comprobar que hay colision entre la bala y alien
 bool CheckCollision(SDL_Rect a, SDL_Rect b) {
   return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
@@ -45,7 +57,7 @@ bool collision(std::vector<Bullet>& bullets, std::vector<Alien>& aliens) {
     return false;
 }
 
-
+char data[128]; // Arreglo para almacenar los datos recibidos
 
 //int main(int argc, char* args[]) {
 void game(int n){
@@ -58,7 +70,6 @@ void game(int n){
         -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     SDL_Event event;
     bool quit = false;
-    
     Ship ship(renderer, "sprites/ship.png", 50, SCREEN_HEIGHT / 2 - 32);
     std::vector<Bullet> bullets;
     std::vector<Alien> aliens;
@@ -85,6 +96,18 @@ void game(int n){
     
     bool replay=false;
     Uint32 lastAlienTime= SDL_GetTicks();
+    Control();
+
+    printf("puerto");
+    serial::Serial my_serial("/dev/ttyUSB0",9600,serial::Timeout::simpleTimeout(3000));
+    if(my_serial.isOpen()){
+        std::cout<<"port opened succesfully"<<std::endl;
+        printf("puerto abierto");
+    }else{
+        std::cout<<"port failed to open"<<std::endl;
+        printf("fallo al abrir el puerto");
+    }
+    my_serial.flushOutput();
 
     while (!quit) {
         while (SDL_PollEvent(&event)) {
@@ -126,6 +149,36 @@ void game(int n){
                     }
             }
         }
+        // Leer los datos del puerto serial
+        //std::string;
+        my_serial.flushInput();
+        std::string data = my_serial.read(6);
+        std::cout<<"Arduino:"<<data<<std::endl;
+        printf("%d",data);
+
+        // Analizar los datos recibidos
+        int x = 0, y = 0, button = 0;
+            // Utilizar los valores recibidos para controlar la nave
+        if (y < 512) {
+            // Mover la nave hacia arriba
+            ship.moveUp();
+        } else if (y > 512) {
+            // Mover la nave hacia abajo
+            ship.moveDown();
+        }
+        if (button == 0) {
+            // Disparar la bala
+            if(bullets_count < n*200 && bullets.size()<refract){
+                                bullets_count++;
+                                //shotBullet(BulletsList);
+                                bullets.emplace_back(renderer, 
+                                    ship.getRect().x + 64, 
+                                    ship.getRect().y + 32);
+            }
+        }
+
+        
+
         //alienGenerator(n,lastAlienTime,aliens);
         if(n==15 && SDL_GetTicks() - lastAlienTime >= n*35){
             lastAlienTime = SDL_GetTicks();
@@ -196,5 +249,6 @@ void game(int n){
     
     //return 0;
 }
+
 
 #endif
