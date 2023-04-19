@@ -87,6 +87,9 @@ public:
                     SDL_DestroyWindow(window_);
                     int n = 55;//35
                     game(n);
+                    printf("funciona");
+                    throw std::runtime_error("Fallo al crear la ventana");
+
                 }
                 break;
         }

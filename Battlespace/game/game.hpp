@@ -131,27 +131,30 @@ void game(int n){
             for(int i = 0; i < 5 && i < aliens.size(); i++){//oleada 1
                     aliens[i].move();
                 }
-            /*for(auto& alien : aliens){
-                alien.move();
-            }*/
             if(array[1]>1){
                 for(int i = 5; i < 10 && i < aliens.size(); i++){//oleada 2
                     aliens[i].move();
                 }
                 if(array[1]>2){
-                    if(strike<1){
-                        quit=true;
-                    }
                     for(int i = 10; i < 15 && i < aliens.size(); i++){//oleada 3
                         aliens[i].move();
+                    }
+                    if(strike<1){
+                        quit=true;
                     }
                     if(array[1]>3){
                         for(int i = 15; i < 20 && i < aliens.size(); i++){//oleada 4
                             aliens[i].move();
                         }
+                        if(strike<3){
+                        quit=true;
+                    }
                         if(array[1]>4){
                             for(int i = 20; i < 25 && i < aliens.size(); i++){//oleada 5
                                 aliens[i].move();
+                            }
+                            if(strike<5){
+                                quit=true;
                             }
                         }
                     }

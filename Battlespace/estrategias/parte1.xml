@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<estrategia nombre="Estrategia 1">
+    <poderes>
+        <poder1 nombre="Poder 1">
+            <descripcion>Este poder permite al jugador lanzar un misil guiado.</descripcion>
+            <dano>10</dano>
+            <alcance>50</alcance>
+        </poder1>
+        <poder2 nombre="Poder 2">
+            <descripcion>Este poder desactiva temporalmente el escudo del enemigo.</descripcion>
+            <duracion>5</duracion>
+        </poder2>
+    </poderes>
+</estrategia>
