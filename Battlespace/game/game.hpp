@@ -6,18 +6,29 @@
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
+#include <libserial/SerialPort.h>
+#include <libserial/SerialStream.h>
+#include <cstdlib>
+#include <fstream>
+#include <unistd.h>
+
 using std::cin;
 using std::cout;
 
+/*
 #include </home/vboxuser/Downloads/Battlespace/mobs/alien.hpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/bullet.hpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/ship.hpp>
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/spawner.hpp>
+*/
 
-/*#include "/home/nacho/Proyecto-I-Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
-#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/ship.hpp"
-#include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/alien.hpp"*/
+
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/alien.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/bullet.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
+#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/spawner.hpp>
 
 //Para comprobar que hay colision entre la bala y alien
 bool CheckCollision(SDL_Rect a, SDL_Rect b) {
@@ -47,6 +58,7 @@ bool collision(std::vector<Bullet>& bullets, std::vector<Alien>& aliens) {
 
 //int main(int argc, char* args[]) {
 void game(int n){
+
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_Window* window = SDL_CreateWindow("Battlespace", 
@@ -83,7 +95,27 @@ void game(int n){
     
     bool replay=false;
     Uint32 lastAlienTime= SDL_GetTicks();
+       using namespace LibSerial ;
 
+    // Instantiate a Serial Port and a Serial Stream object.
+             SerialPort serial_port;
+             SerialStream serial_stream;
+
+    try
+    {
+        // Abrir el puerto para el Serial_Stream donde esta conectado el arduino
+        serial_stream.Open("/dev/ttyUSB0") ;
+    }
+    catch (const OpenFailed&)
+    {
+        std::cerr << "The serial port did not open correctly." << std::endl ;
+    }
+serial_stream.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
+serial_stream.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
+
+// Variables para almacenar los datos recibidos
+    int lecturaX, lecturaY, bt, lecturaPot;
     while (!quit) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -124,6 +156,40 @@ void game(int n){
                     }
             }
         }
+        // Leer los datos desde Arduino
+        std::string data;
+        std::getline(serial_stream, data);
+
+        // Analizar los datos recibidos
+        sscanf(data.c_str(), "%d,%d,%d,%d", &lecturaX, &lecturaY, &bt, &lecturaPot);
+
+        // Imprimir los datos recibidos
+        /*
+        std::cout << "LecturaX: " << lecturaX << std::endl;
+        std::cout << "LecturaY: " << lecturaY << std::endl;
+        std::cout << "BT: " << bt << std::endl;
+        std::cout << "LecturaPot: " << lecturaPot << std::endl;
+        */
+        // Enviar datos a Arduino para encender el siete segmentos, buzzer y led
+        int sieteSegmentos = 0;
+        int buzzer = 0;
+        int led = 0;
+        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+        // Esperar un tiempo antes de leer los datos de nuevo
+        //SDL_Delay(50);
+        //Movimiento de la nave con el arduino
+        if(lecturaY>600){ship.moveUp();}else if(lecturaY<400){ship.moveDown();}else{}
+        //Disparo con el arduino
+        if(bt==0){if(bullets_count < n*200 && bullets.size()<refract){
+                                bullets_count++;
+                                //shotBullet(BulletsList);
+                                bullets.emplace_back(renderer, 
+                                    ship.getRect().x + 64, 
+                                    ship.getRect().y + 32);}else{serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
+        }
+        //Velocidad de disparo con el arduino, en progreso
+        //if(){}
+
         //alienGenerator(n,lastAlienTime,aliens);
         if(n==15 && SDL_GetTicks() - lastAlienTime >= n*35){
             lastAlienTime = SDL_GetTicks();
@@ -162,19 +228,14 @@ void game(int n){
                 for (auto& alien : aliens) {
                     /**/
                     if (collision(bullets, aliens)) {
-                    // La bala ha golpeado un alien
-                    // Hacer algo aquí, como reducir la vida del alien, etc.
-                    printf("La bala golpeo un alien111");
-                    //bullets.erase(bullets.begin());
-                    //aliens.erase(aliens.begin());
-                    //alien.health -= bullet.dmg
+                        int buzzer=1;
+                        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
                     }
                     }
                     if(bullet.isOffScreen()){
                     //RecoveryBullets(bullet.dmg,RecoveryList,d);
                     //bullets.erase(bullets.begin());
                     //addBullets(BulletsList,RecoveryList);
-
         }
         }
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {
