@@ -233,9 +233,9 @@ serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
                     }
                     }
                     if(bullet.isOffScreen()){
-                    //RecoveryBullets(bullet.dmg,RecoveryList,d);
+                    RecoveryBullets(bullet.dmg,RecoveryList,d);
                     //bullets.erase(bullets.begin());
-                    //addBullets(BulletsList,RecoveryList);
+                    addBullets(BulletsList,RecoveryList);
         }
         }
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {
