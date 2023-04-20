@@ -1,4 +1,4 @@
 <estrategia>
-  <descripcion>Esta es una estrategia para ganar en el juego</descripcion>
-  <poder nivel="0">Incrementa la velocidad y la fuerza de los jugadores</poder>
+  <descripcion>Detener balas</descripcion>
+  <poder nivel="0">Si es necesario ahorrar balas, esto te puede ayudar</poder>
 </estrategia>

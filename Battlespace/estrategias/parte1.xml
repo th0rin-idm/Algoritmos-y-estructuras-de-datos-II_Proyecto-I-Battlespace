@@ -1,4 +1,4 @@
 <estrategia>
-  <descripcion>Esta es una estrategia para ganar en el juego</descripcion>
-  <poder nivel="50">Incrementa la velocidad y la fuerza de los jugadores</poder>
+  <descripcion>Rafaga de balas</descripcion>
+  <poder nivel="50">Si estas acorralado permite sobrevivir</poder>
 </estrategia>

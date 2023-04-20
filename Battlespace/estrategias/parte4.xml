@@ -1,4 +1,4 @@
 <estrategia>
-  <descripcion>Esta es una estrategia para ganar en el juego</descripcion>
-  <poder nivel="100">Incrementa la velocidad y la fuerza de los jugadores</poder>
+  <descripcion>Balas mas rapidas </descripcion>
+  <poder nivel="30"></poder>
 </estrategia>
