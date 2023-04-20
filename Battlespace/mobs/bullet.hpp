@@ -9,12 +9,13 @@ const int SCREEN_HEIGHT = 480;*/
 
 class Bullet {
 public:
-    Bullet(SDL_Renderer* renderer, int x, int y) {
+    Bullet(SDL_Renderer* renderer, int x, int y, int dmgb) {
         rect = {x, y, 16, 16};
         recty=y;
         surface = IMG_Load("sprites/bullet.png");
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
+        dmg=dmg/dmgb;
     }
     int dmg=80;
     
