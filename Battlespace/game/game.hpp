@@ -22,8 +22,6 @@ using std::cout;
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/spawner.hpp>
 */
-
-
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/alien.hpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/bullet.hpp>
 #include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp>
@@ -95,8 +93,8 @@ void game(int n){
     
     bool replay=false;
     Uint32 lastAlienTime= SDL_GetTicks();
-       using namespace LibSerial ;
 
+       using namespace LibSerial ;
     // Instantiate a Serial Port and a Serial Stream object.
              SerialPort serial_port;
              SerialStream serial_stream;
@@ -164,12 +162,11 @@ serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
         sscanf(data.c_str(), "%d,%d,%d,%d", &lecturaX, &lecturaY, &bt, &lecturaPot);
 
         // Imprimir los datos recibidos
-        /*
         std::cout << "LecturaX: " << lecturaX << std::endl;
         std::cout << "LecturaY: " << lecturaY << std::endl;
         std::cout << "BT: " << bt << std::endl;
         std::cout << "LecturaPot: " << lecturaPot << std::endl;
-        */
+    
         // Enviar datos a Arduino para encender el siete segmentos, buzzer y led
         int sieteSegmentos = 0;
         int buzzer = 0;
@@ -185,7 +182,7 @@ serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
                                 //shotBullet(BulletsList);
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
-                                    ship.getRect().y + 32);}else{serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
+                                    ship.getRect().y + 32);}else{led=1;serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
         }
         //Velocidad de disparo con el arduino, en progreso
         //if(){}
@@ -195,6 +192,9 @@ serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
             lastAlienTime = SDL_GetTicks();
             for(auto& alien : aliens){
                 alien.move();
+                if(alien.getRect().x==ship.getRect().x){
+
+                }
             }
         }else if(n==25 && SDL_GetTicks() - lastAlienTime >= n*25){
             lastAlienTime = SDL_GetTicks();
@@ -207,7 +207,6 @@ serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
                 alien.move();
             }
         }
-
         SDL_RenderClear(renderer);
         ship.draw(renderer);
 
