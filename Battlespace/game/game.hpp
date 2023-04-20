@@ -45,14 +45,32 @@ bool CheckCollisionship(SDL_Rect a, SDL_Rect b) {
 //Para comprobar que un alien paso el eje x de la nave
 bool ShipCollision(Ship& ship, std::vector<Alien>& aliens) {
         for (int j = 0; j < aliens.size(); j++) {
-            printf("entro al for de shipcollision");
             if (CheckCollisionship(ship.getRect(),aliens[j].getRect())) { 
                 printf("el alien paso el x de la nave");
                 int damage=20;
                 aliens.erase(aliens.begin()+j);
                 ship.health -= damage;
-                if(ship.health<= 0){
+                if(ship.health <= 0){
                     printf("Se acabo el juego, la nave se quedo sin vida \n");
+                        // Mostrar cuadro de diálogo con mensaje
+            const SDL_MessageBoxButtonData buttons[] = {
+            { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 0, "Aceptar" },
+            };
+            const SDL_MessageBoxData messageboxdata = {
+            SDL_MESSAGEBOX_INFORMATION,
+            NULL,
+            "Juego terminado",
+            "El juego ha finalizado.",
+            SDL_arraysize(buttons),
+            buttons,
+            NULL
+            };
+            int buttonid;
+            if (SDL_ShowMessageBox(&messageboxdata, &buttonid) < 0) {
+            SDL_Log("No se pudo mostrar el cuadro de diálogo: %s", SDL_GetError());
+            }
+            SDL_Delay(2000);
+            SDL_Quit();
                 return true;
                 }
                 return true;
@@ -102,12 +120,13 @@ void game(int n){
     int bullets_count = 0;
     int d;
     int delay = 60;
-    int hordas = 0;
+    int hordas = 10;
 
-    int array[3];
+    int array[4];
     array[0] = n;
     array[1] = bullets_count;
     array[2]=d;
+    array[3]=hordas;
     int lista[array[0]];
 
     const char* archivo_xml = nullptr;
@@ -257,21 +276,21 @@ void game(int n){
         if(lecturaPot>0 && lecturaPot<400){refract=2;}else if(lecturaPot>400 && lecturaPot<600){refract=4;}else if(lecturaPot>600 && lecturaPot<800){refract=6;}else if(lecturaPot>800 && lecturaPot<100){refract=8;}
 
         if(array[0]==50 && SDL_GetTicks() - lastAlienTime >= array[0]*25){
-            
             //if (hordas<100){}
                 int currentTime = SDL_GetTicks();
                 int elapsedTime = currentTime - lastHordeTime;
-                    
-                // Verificar si es momento de generar una nueva horda
-                if (elapsedTime >= MIN_HORDE_INTERVAL) {
+                   // Verificar si es momento de generar una nueva horda
+                if (elapsedTime >= 2000) {
+
                     int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
                     int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
                     //int hordeInterval = 5000;
                         
-                    if (currentTime - lastHordeTime >= hordeInterval) {
+                    if (currentTime - lastHordeTime >= 2000) {
                             // Generar nueva horda
-                            sieteSegmentos=10;
+                            sieteSegmentos=array[3];
                             serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+                            array[3]-=1;;
                             int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                             for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                                 aliens[i].move();
@@ -285,20 +304,23 @@ void game(int n){
                             lastHordeTime = currentTime;
                         }
                 }
-                hordas++;
-                std::cout<<hordas;
+
+            
             
         }else if(array[0]==60 && SDL_GetTicks() - lastAlienTime >= array[0]*15){
             int currentTime = SDL_GetTicks();
             int elapsedTime = currentTime - lastHordeTime;
                 
             // Verificar si es momento de generar una nueva horda
-            if (elapsedTime >= MIN_HORDE_INTERVAL) {
+            if (elapsedTime >= 1200) {
                 int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
                 int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
                     
-                if (currentTime - lastHordeTime >= hordeInterval) {
+                if (currentTime - lastHordeTime >= 1200) {
                         // Generar nueva horda
+                        sieteSegmentos=array[3];
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+                            array[3]-=1;;
                         int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                         for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
@@ -314,12 +336,15 @@ void game(int n){
             int elapsedTime = currentTime - lastHordeTime;
                 
             // Verificar si es momento de generar una nueva horda
-            if (elapsedTime >= MIN_HORDE_INTERVAL) {
+            if (elapsedTime >= 500) {
                 int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
                 int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
                     
-                if (currentTime - lastHordeTime >= hordeInterval) {
+                if (currentTime - lastHordeTime >= 500) {
                         // Generar nueva horda
+                        sieteSegmentos=array[3];
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+                            array[3]-=1;;
                         int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                         for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
