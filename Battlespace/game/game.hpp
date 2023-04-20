@@ -268,8 +268,8 @@ void game(int n){
         std::cout << "LecturaX: " << lecturaX << std::endl;
         std::cout << "LecturaY: " << lecturaY << std::endl;
         std::cout << "BT: " << bt << std::endl;
-        std::cout << "LecturaPot: " << lecturaPot << std::endl;
         */
+        std::cout << "LecturaPot: " << lecturaPot << std::endl;
         // Enviar datos a Arduino para encender el siete segmentos, buzzer y led
         int sieteSegmentos = 0;
         int buzzer = 0;
@@ -307,9 +307,14 @@ void game(int n){
                         
                     if (currentTime - lastHordeTime >= 2000) {
                             // Generar nueva horda
+                            if(array[3]!=0){
                             sieteSegmentos=array[3];
                             serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
-                            array[3]-=1;;
+                            array[3]-=1;
+                            }
+                            sieteSegmentos=0;
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+
                             int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                             for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                                 aliens[i].move();
@@ -337,9 +342,14 @@ void game(int n){
                     
                 if (currentTime - lastHordeTime >= 1200) {
                         // Generar nueva horda
-                        sieteSegmentos=array[3];
+                          if(array[3]!=0){
+                            sieteSegmentos=array[3];
                             serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
-                            array[3]-=1;;
+                            array[3]-=1;
+                            }
+                            sieteSegmentos=0;
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+
                         int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                         for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
@@ -361,9 +371,14 @@ void game(int n){
                     
                 if (currentTime - lastHordeTime >= 500) {
                         // Generar nueva horda
-                        sieteSegmentos=array[3];
+                        if(array[3]!=0){
+                            sieteSegmentos=array[3];
                             serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
-                            array[3]-=1;;
+                            array[3]-=1;
+                            }
+                            sieteSegmentos=0;
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+
                         int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                         for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
