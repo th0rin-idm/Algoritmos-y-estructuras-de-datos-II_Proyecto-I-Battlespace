@@ -18,8 +18,24 @@ public:
     }
     int health=100;
     
+    int getY(){
+        return rect_alien.y;
+    }
+
     void move() {
         rect_alien.x -= 15;
+    }
+
+    void Reverse_moveUp() {
+        if(rect_alien.y>30 && rect_alien.y<400){
+            rect_alien.y -= 15;
+        }
+    }
+
+    void Reverse_moveDown() {
+        if(rect_alien.y>30 && rect_alien.y<400){
+            rect_alien.y += 15;
+        }
     }
     
     void draw(SDL_Renderer* renderer) {

@@ -5,12 +5,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <iostream>
-//#include </home/vboxuser/Downloads/Battlespace/game/game.hpp>
-#include </home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/game/game.hpp>
+#include </home/vboxuser/Downloads/Battlespace/game/game.hpp>
+//#include </home/nacho/Proyecto-I-Battlespace/sdl2_demo/game/game.hpp>
 
 /*const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;*/
-const char* WINDOW_TITLE = "Mi ventana";
+const char* WINDOW_TITLE = "Battlespace";
 
 class Window {
 public:
@@ -69,7 +69,8 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 15;//15
+                    int n = 50;//15
+                    
                     game(n);
 
                 }else if (mouseX >= buttonRect_2.x && mouseX < buttonRect_2.x + buttonRect_2.w &&
@@ -77,7 +78,7 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 25;//25
+                    int n = 60;//25
                     game(n);
 
                 }else if (mouseX >= buttonRect_3.x && mouseX < buttonRect_3.x + buttonRect_3.w &&
@@ -85,8 +86,9 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 35;//35
+                    int n = 70;//35
                     game(n);
+
                 }
                 break;
         }
