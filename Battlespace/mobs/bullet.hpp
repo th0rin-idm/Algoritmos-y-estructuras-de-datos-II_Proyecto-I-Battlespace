@@ -27,7 +27,7 @@ public:
     }
     
     bool isOffScreen() const {
-        return rect.x > SCREEN_WIDTH;
+        return rect.x > 640;
     }
     
     SDL_Rect getRect() const {
