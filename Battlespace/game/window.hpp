@@ -69,7 +69,8 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 35;//15
+                    int n = 50;//15
+                    
                     game(n);
 
                 }else if (mouseX >= buttonRect_2.x && mouseX < buttonRect_2.x + buttonRect_2.w &&
@@ -77,7 +78,7 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 45;//25
+                    int n = 60;//25
                     game(n);
 
                 }else if (mouseX >= buttonRect_3.x && mouseX < buttonRect_3.x + buttonRect_3.w &&
@@ -85,10 +86,8 @@ public:
                     
                     SDL_DestroyRenderer(renderer_);
                     SDL_DestroyWindow(window_);
-                    int n = 55;//35
+                    int n = 70;//35
                     game(n);
-                    printf("funciona");
-                    throw std::runtime_error("Fallo al crear la ventana");
 
                 }
                 break;

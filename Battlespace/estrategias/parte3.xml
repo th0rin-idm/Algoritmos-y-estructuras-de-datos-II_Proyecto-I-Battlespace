@@ -1,4 +1,4 @@
 <estrategia>
   <descripcion>Esta es una estrategia para ganar en el juego</descripcion>
-  <poder nivel="5">Incrementa la velocidad y la fuerza de los jugadores</poder>
+  <poder nivel="3">Incrementa la velocidad y la fuerza de los jugadores</poder>
 </estrategia>

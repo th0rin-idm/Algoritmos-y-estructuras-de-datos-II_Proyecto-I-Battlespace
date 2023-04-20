@@ -1,25 +1,27 @@
-#include "/usr/local/include/pugixml.hpp"
+
+
 #include <iostream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
-int main()
-{
-    pugi::xml_document doc;
-    
-    // Cargar archivo XML
-    if (!doc.load_file("estrategia1.xml"))
-    {
-        std::cerr << "Error al cargar archivo XML" << std::endl;
-        return 1;
-    }
+int lector() {
+  // Nombres de los archivos XML
+  std::vector<std::string> xml_files = {"parte1.xml", "parte2.xml", "parte3.xml", "parte4.xml"};
 
-    // Acceder a los elementos del archivo XML
-    pugi::xml_node estrategia = doc.child("estrategia");
-    pugi::xml_node poderes = estrategia.child("poderes");
+  // Recorre cada archivo XML
+  for (const auto& file : xml_files) {
+    // Carga el archivo XML en un objeto ptree
+    boost::property_tree::ptree ptree;
+    boost::property_tree::read_xml(file, ptree);
 
-    // Imprimir información de la estrategia y poderes
-    std::cout << "Estrategia: " << estrategia.attribute("nombre").value() << std::endl;
-    std::cout << "Poder 1: " << poderes.child("poder1").attribute("nombre").value() << std::endl;
-    std::cout << "Poder 2: " << poderes.child("poder2").attribute("nombre").value() << std::endl;
+    // Obtiene el valor del atributo "nivel" y lo asigna a una variable int
+    int nivel = ptree.get<int>("estrategia.poder.<xmlattr>.nivel");
 
-    return 0;
+    // Imprime el valor de la variable nivel
+    std::cout << "El valor de nivel en " << file << " es: " << nivel << std::endl;
+  }
+
+  return 0;
 }
+
+

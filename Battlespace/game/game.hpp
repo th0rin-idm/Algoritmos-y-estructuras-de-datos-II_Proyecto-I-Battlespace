@@ -6,6 +6,8 @@
 #include <SDL2/SDL_image.h>
 #include <vector>
 #include <algorithm>
+#include <ctime>
+
 using std::cin;
 using std::cout;
 
@@ -13,6 +15,14 @@ using std::cout;
 #include </home/vboxuser/Downloads/Battlespace/mobs/bullet.hpp>
 #include </home/vboxuser/Downloads/Battlespace/mobs/ship.hpp>
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
+
+#include </home/vboxuser/Downloads/Battlespace/estrategias/lector.cpp>
+
+#include <libserial/SerialPort.h>
+#include <libserial/SerialStream.h>
+#include <cstdlib>
+#include <fstream>
+#include <unistd.h>
 
 /*#include "/home/nacho/Proyecto-I-Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
 #include "/home/nacho/Proyecto-I-Battlespace/sdl2_demo/mobs/ship.hpp"
@@ -49,6 +59,7 @@ bool collision(std::vector<Bullet>& bullets, std::vector<Alien>& aliens) {
 
 
 void game(int n){
+    std::clock_t start = std::clock(); // Se guarda el tiempo inicial
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     SDL_Window* window = SDL_CreateWindow("Battlespace", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -68,7 +79,6 @@ void game(int n){
     int array[2];
     array[0] = n;
     array[1] = bullets_count;
-
     int lista[array[0]];
 
     //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
@@ -85,6 +95,33 @@ void game(int n){
         lista[i] = randomy;
         aliens.emplace_back(renderer, SCREEN_WIDTH+(i*15), lista[i]);
     }
+
+
+    const int MIN_HORDE_INTERVAL = 3000; // Tiempo mínimo entre hordas (en milisegundos)
+    const int MAX_HORDE_INTERVAL = 4000; // Tiempo máximo entre hordas (en milisegundos)
+
+    int lastHordeTime = 0; // Tiempo en que se generó la última horda
+
+    using namespace LibSerial ;
+    // Instantiate a Serial Port and a Serial Stream object.
+    SerialStream serial_stream;
+
+    try
+    {
+        // Abrir el puerto para el Serial_Stream donde esta conectado el arduino
+        serial_stream.Open("/dev/ttyUSB0") ;
+    }
+    catch (const OpenFailed&)
+    {
+        std::cerr << "The serial port did not open correctly." << std::endl ;
+    }
+    serial_stream.SetBaudRate(LibSerial::BaudRate::BAUD_9600);
+    serial_stream.SetCharacterSize(LibSerial::CharacterSize::CHAR_SIZE_8);
+    serial_stream.SetFlowControl(LibSerial::FlowControl::FLOW_CONTROL_NONE);
+
+    // Variables para almacenar los datos recibidos
+    int lecturaX, lecturaY, bt, lecturaPot;
+
 
     while (!quit) {
         while (SDL_PollEvent(&event)) {
@@ -126,49 +163,106 @@ void game(int n){
                     }
             }
         }
-        if(array[0]==35 && SDL_GetTicks() - lastAlienTime >= array[0]*35){
-            lastAlienTime = SDL_GetTicks();
-            for(int i = 0; i < 5 && i < aliens.size(); i++){//oleada 1
-                    aliens[i].move();
-                }
-            if(array[1]>1){
-                for(int i = 5; i < 10 && i < aliens.size(); i++){//oleada 2
-                    aliens[i].move();
-                }
-                if(array[1]>2){
-                    for(int i = 10; i < 15 && i < aliens.size(); i++){//oleada 3
-                        aliens[i].move();
+
+        // Leer los datos desde Arduino
+        std::string data;
+        std::getline(serial_stream, data);
+
+        // Analizar los datos recibidos
+        sscanf(data.c_str(), "%d,%d,%d,%d", &lecturaX, &lecturaY, &bt, &lecturaPot);
+
+        // Imprimir los datos recibidos
+        std::cout << "LecturaX: " << lecturaX << std::endl;
+        std::cout << "LecturaY: " << lecturaY << std::endl;
+        std::cout << "BT: " << bt << std::endl;
+        std::cout << "LecturaPot: " << lecturaPot << std::endl;
+    
+        // Enviar datos a Arduino para encender el siete segmentos, buzzer y led
+        int sieteSegmentos = 0;
+        int buzzer = 0;
+        int led = 0;
+        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+        // Esperar un tiempo antes de leer los datos de nuevo
+        //SDL_Delay(50);
+        //Movimiento de la nave con el arduino
+        if(lecturaY>600){ship.moveUp();}else if(lecturaY<400){ship.moveDown();}else{}
+        //Disparo con el arduino
+        if(bt==0){if(bullets_count < n*200 && bullets.size()<refract){
+                                bullets_count++;
+                                //shotBullet(BulletsList);
+                                bullets.emplace_back(renderer, 
+                                    ship.getRect().x + 64, 
+                                    ship.getRect().y + 32);}else{led=1;serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
+        }
+        //Velocidad de disparo con el arduino, en progreso
+        //if(){}
+
+        if(array[0]==50 && SDL_GetTicks() - lastAlienTime >= array[0]*25){
+            
+            int currentTime = SDL_GetTicks();
+            int elapsedTime = currentTime - lastHordeTime;
+                
+            // Verificar si es momento de generar una nueva horda
+            if (elapsedTime >= MIN_HORDE_INTERVAL) {
+                int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
+                int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
+                    
+                if (currentTime - lastHordeTime >= hordeInterval) {
+                        // Generar nueva horda
+
+                        int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
+                        for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
+                            aliens[i].move();
+                            if(i % 2 == 0){
+                                aliens[i].Reverse_moveUp();
+                            }else{
+                                aliens[i].Reverse_moveDown();
+                            }
+                        }
+                        // Actualizar tiempo de la última horda
+                        lastHordeTime = currentTime;
                     }
-                    if(strike<1){
-                        quit=true;
-                    }
-                    if(array[1]>3){
-                        for(int i = 15; i < 20 && i < aliens.size(); i++){//oleada 4
+            }
+        }else if(array[0]==60 && SDL_GetTicks() - lastAlienTime >= array[0]*15){
+            int currentTime = SDL_GetTicks();
+            int elapsedTime = currentTime - lastHordeTime;
+                
+            // Verificar si es momento de generar una nueva horda
+            if (elapsedTime >= MIN_HORDE_INTERVAL) {
+                int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
+                int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
+                    
+                if (currentTime - lastHordeTime >= hordeInterval) {
+                        // Generar nueva horda
+                        int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
+                        for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
                         }
-                        if(strike<3){
-                        quit=true;
+                        
+                        // Actualizar tiempo de la última horda
+                        lastHordeTime = currentTime;
                     }
-                        if(array[1]>4){
-                            for(int i = 20; i < 25 && i < aliens.size(); i++){//oleada 5
-                                aliens[i].move();
-                            }
-                            if(strike<5){
-                                quit=true;
-                            }
+            }
+
+        }else if(array[0]==70 && SDL_GetTicks() - lastAlienTime >= array[0]*5){
+            int currentTime = SDL_GetTicks();
+            int elapsedTime = currentTime - lastHordeTime;
+                
+            // Verificar si es momento de generar una nueva horda
+            if (elapsedTime >= MIN_HORDE_INTERVAL) {
+                int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
+                int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
+                    
+                if (currentTime - lastHordeTime >= hordeInterval) {
+                        // Generar nueva horda
+                        int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
+                        for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
+                            aliens[i].move();
                         }
+                        
+                        // Actualizar tiempo de la última horda
+                        lastHordeTime = currentTime;
                     }
-                }
-            }
-        }else if(array[0]==45 && SDL_GetTicks() - lastAlienTime >= array[0]*25){
-            lastAlienTime = SDL_GetTicks();
-            for(auto& alien : aliens){
-                alien.move();
-            }
-        }else if(array[0]==55 && SDL_GetTicks() - lastAlienTime >= array[0]*15){
-            lastAlienTime = SDL_GetTicks();
-            for(auto& alien : aliens){
-                alien.move();
             }
         }
 
@@ -192,18 +286,14 @@ void game(int n){
                 for (auto& alien : aliens) {
                     /**/
                     if (collision(bullets, aliens)) {
-                    // La bala ha golpeado un alien
-                    // Hacer algo aquí, como reducir la vida del alien, etc.
-                    printf("La bala golpeo un alien111");
-                    //bullets.erase(bullets.begin());
-                    //aliens.erase(aliens.begin());
-                    //alien.health -= bullet.dmg
+                        int buzzer=1;
+                        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
                     }
                     }
                     if(bullet.isOffScreen()){
-                    //RecoveryBullets(bullet.dmg,RecoveryList,d);
+                    RecoveryBullets(bullet.dmg,RecoveryList,d);
                     //bullets.erase(bullets.begin());
-                    //addBullets(BulletsList,RecoveryList);
+                    addBullets(BulletsList,RecoveryList);
 
         }
         }
