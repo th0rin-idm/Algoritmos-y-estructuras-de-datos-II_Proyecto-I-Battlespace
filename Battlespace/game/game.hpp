@@ -18,12 +18,14 @@ using std::cout;
 #include </home/vboxuser/Downloads/Battlespace/LinkedList_P1_Bullets/Bullets.cpp>
 #include </home/vboxuser/Downloads/Battlespace/estrategias/lector.cpp>
 */
-
 #include <libserial/SerialPort.h>
 #include <libserial/SerialStream.h>
 #include <cstdlib>
 #include <fstream>
 #include <unistd.h>
+
+#include "pugixml.hpp"
+
 
 #include "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/LinkedList_P1_Bullets/Bullets.cpp"
 #include "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/mobs/ship.hpp"
@@ -36,6 +38,27 @@ int strike = 0;
 //Para comprobar que hay colision entre la bala y alien
 bool CheckCollision(SDL_Rect a, SDL_Rect b) {
   return (a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y);
+}
+bool CheckCollisionship(SDL_Rect a, SDL_Rect b) {
+  return (a.x >= b.x + b.w);
+}
+//Para comprobar que un alien paso el eje x de la nave
+bool ShipCollision(Ship& ship, std::vector<Alien>& aliens) {
+        for (int j = 0; j < aliens.size(); j++) {
+            printf("entro al for de shipcollision");
+            if (CheckCollisionship(ship.getRect(),aliens[j].getRect())) { 
+                printf("el alien paso el x de la nave");
+                int damage=20;
+                aliens.erase(aliens.begin()+j);
+                ship.health -= damage;
+                if(ship.health<= 0){
+                    printf("Se acabo el juego, la nave se quedo sin vida \n");
+                return true;
+                }
+                return true;
+            }
+        }
+    return false;
 }
 
 //para comprobar que alguna bala colisiono con alguna nave y
@@ -78,12 +101,16 @@ void game(int n){
     int refract=1; 
     int bullets_count = 0;
     int d;
+    int delay = 60;
+    int hordas = 0;
 
     int array[3];
     array[0] = n;
     array[1] = bullets_count;
     array[2]=d;
     int lista[array[0]];
+
+    const char* archivo_xml = nullptr;
 
 
     if(array[0]==50){array[2]=1;}else if(array[0]==60){array[2]=2;}else if(array[0]==70){array[2]=3;}
@@ -103,9 +130,8 @@ void game(int n){
     }
 
 
-    const int MIN_HORDE_INTERVAL = 3000; // Tiempo mínimo entre hordas (en milisegundos)
-    const int MAX_HORDE_INTERVAL = 4000; // Tiempo máximo entre hordas (en milisegundos)
-
+    const int MIN_HORDE_INTERVAL = 1000; // Tiempo mínimo entre hordas (en milisegundos)
+    const int MAX_HORDE_INTERVAL = 1500; // Tiempo máximo entre hordas (en milisegundos)
     int lastHordeTime = 0; // Tiempo en que se generó la última horda
 
     using namespace LibSerial ;
@@ -127,8 +153,6 @@ void game(int n){
 
     // Variables para almacenar los datos recibidos
     int lecturaX, lecturaY, bt, lecturaPot;
-
-
     while (!quit) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -159,7 +183,7 @@ void game(int n){
                                     ship.getRect().y + 32,dmgb);
                             }
                             break;
-                         case SDLK_LEFT:
+                        case SDLK_LEFT:
                             if(refract>=2){
                                 refract-=1;
                                 }
@@ -167,6 +191,28 @@ void game(int n){
                         case SDLK_RIGHT:
                             refract+=1;
                             break;
+                        case SDLK_1:
+                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte1.xml";
+                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte1.xml";
+                            refract= extraer_nivel_poder_xml(archivo_xml);
+                            break;
+
+                        case SDLK_2:
+                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte2.xml";
+                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte2.xml";
+                            refract= extraer_nivel_poder_xml(archivo_xml);
+                            break;
+                        case SDLK_3:
+                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte3.xml";
+                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte3.xml";
+                            delay= extraer_nivel_poder_xml(archivo_xml);
+                            break;
+                        case SDLK_4:
+                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte4.xml";
+                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte4.xml";
+                            delay= extraer_nivel_poder_xml(archivo_xml);
+                            break;
+
                         break;
                     }
             }
@@ -212,31 +258,36 @@ void game(int n){
 
         if(array[0]==50 && SDL_GetTicks() - lastAlienTime >= array[0]*25){
             
-            int currentTime = SDL_GetTicks();
-            int elapsedTime = currentTime - lastHordeTime;
-                
-            // Verificar si es momento de generar una nueva horda
-            if (elapsedTime >= MIN_HORDE_INTERVAL) {
-                int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
-                int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
+            //if (hordas<100){}
+                int currentTime = SDL_GetTicks();
+                int elapsedTime = currentTime - lastHordeTime;
                     
-                if (currentTime - lastHordeTime >= hordeInterval) {
-                        // Generar nueva horda
-                        sieteSegmentos=1;
-                        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
-                        int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
-                        for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
-                            aliens[i].move();
-                            if(i % 2 == 0){
-                                aliens[i].Reverse_moveUp();
-                            }else{
-                                aliens[i].Reverse_moveDown();
+                // Verificar si es momento de generar una nueva horda
+                if (elapsedTime >= MIN_HORDE_INTERVAL) {
+                    int randomInterval = MAX_HORDE_INTERVAL - MIN_HORDE_INTERVAL;
+                    int hordeInterval = rand() % randomInterval + MIN_HORDE_INTERVAL;
+                    //int hordeInterval = 5000;
+                        
+                    if (currentTime - lastHordeTime >= hordeInterval) {
+                            // Generar nueva horda
+                            sieteSegmentos=10;
+                            serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+                            int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
+                            for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
+                                aliens[i].move();
+                                if(i % 2 == 0){
+                                    aliens[i].Reverse_moveUp();
+                                }else{
+                                    aliens[i].Reverse_moveDown();
+                                }
                             }
+                            // Actualizar tiempo de la última horda
+                            lastHordeTime = currentTime;
                         }
-                        // Actualizar tiempo de la última horda
-                        lastHordeTime = currentTime;
-                    }
-            }
+                }
+                hordas++;
+                std::cout<<hordas;
+            
         }else if(array[0]==60 && SDL_GetTicks() - lastAlienTime >= array[0]*15){
             int currentTime = SDL_GetTicks();
             int elapsedTime = currentTime - lastHordeTime;
@@ -258,7 +309,7 @@ void game(int n){
                     }
             }
 
-        }else if(array[0]==70 && SDL_GetTicks() - lastAlienTime >= array[0]*5){
+        }else if(array[0]==70 && SDL_GetTicks() - lastAlienTime >= array[0]){
             int currentTime = SDL_GetTicks();
             int elapsedTime = currentTime - lastHordeTime;
                 
@@ -290,6 +341,11 @@ void game(int n){
             enemy++;
             }
         }
+        //Verificar si los aliens sobrepasan el eje x de la nave
+         if(ShipCollision(ship,aliens)){
+                        int buzzer=1;
+                        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
+                    }
 
 
         //creacion de balas,movimiento,colision con alines y eliminacion de bala o recuperacion
@@ -299,17 +355,15 @@ void game(int n){
             //verifica si una bala colisiono con un alien
                 for (auto& alien : aliens) {
                     if (collision(bullets, aliens)) {
-                        int buzzer=1;
+                       int buzzer=1;
                         serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
                     }
-                    }
+                }
                     if(bullet.isOffScreen()){
                     RecoveryBullets(bullet.dmg,RecoveryList,array[0]);
                     //bullets.erase(bullets.begin());
                     addBullets(BulletsList,RecoveryList);
-                    array[1]-=1;
-
-        }
+                    array[1]-=1;  }
         }
         bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](const Bullet& bullet) {
             return bullet.getRecty()<0;
@@ -318,7 +372,7 @@ void game(int n){
 
 
         SDL_RenderPresent(renderer);
-        //SDL_Delay(60);
+        //SDL_Delay(delay);
     }
 
     SDL_DestroyRenderer(renderer);

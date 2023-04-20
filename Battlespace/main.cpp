@@ -10,7 +10,7 @@
 int main(int argc, char* argv[]){
     try {
         Window window;
-        /*
+        /*        
         SDL_Texture* buttonTexture1 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/easy.png");
         SDL_Texture* buttonTexture2 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/normal.png");
         SDL_Texture* buttonTexture3 = IMG_LoadTexture(window.getRenderer(), "/home/vboxuser/Downloads/Battlespace/sprites/hard.png");
@@ -18,8 +18,6 @@ int main(int argc, char* argv[]){
         SDL_Texture* buttonTexture1 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/easy.png");
         SDL_Texture* buttonTexture2 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/normal.png");
         SDL_Texture* buttonTexture3 = IMG_LoadTexture(window.getRenderer(), "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/sprites/hard.png");
-        
-
 
         if (!buttonTexture1 || !buttonTexture2 || !buttonTexture3) {
             SDL_Log("Fallo al cargar la textura: %s", SDL_GetError());

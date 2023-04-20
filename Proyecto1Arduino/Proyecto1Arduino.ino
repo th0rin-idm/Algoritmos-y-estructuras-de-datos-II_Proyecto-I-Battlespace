@@ -52,9 +52,9 @@ void loop() {
         sscanf(data.c_str(), "%d,%d,%d", &sieteSegmentos, &buzzer, &led);
 
         // Encender el siete segmentos
-        if (sieteSegmentos == 1)
+        if (sieteSegmentos !=0)
         {
-          oleada+=1;
+          oleada=sieteSegmentos;
           display.showNumberDec(oleada);
           sieteSegmentos=0;
         }else if(sieteSegmentos==2){

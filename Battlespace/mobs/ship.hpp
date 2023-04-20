@@ -12,6 +12,7 @@ public:
         SDL_FreeSurface(surface);
         rect = {x, y, 64, 64};
     }
+    int health=100;
     
     void moveUp() {
         if(rect.y>0){rect.y -= 10;}
