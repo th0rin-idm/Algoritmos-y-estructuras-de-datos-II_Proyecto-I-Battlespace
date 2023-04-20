@@ -128,6 +128,9 @@ void game(int n){
     array[2]=d;
     array[3]=hordas;
     int lista[array[0]];
+    srand(time(NULL));
+    // Generar un número aleatorio binario (0 o 1)
+    int randomBinary = rand() % 2;
 
     const char* archivo_xml = nullptr;
 
@@ -211,25 +214,41 @@ void game(int n){
                             refract+=1;
                             break;
                         case SDLK_1:
-                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte1.xml";
-                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte1.xml";
-                            refract= extraer_nivel_poder_xml(archivo_xml);
+                            if (randomBinary==0){
+                                //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte1.xml";
+                                archivo_xml = "//home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte1.xml";
+                                refract= extraer_nivel_poder_xml(archivo_xml);
+                            }else{
+                                randomBinary=0;
+                            }
                             break;
 
                         case SDLK_2:
-                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte2.xml";
-                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte2.xml";
-                            refract= extraer_nivel_poder_xml(archivo_xml);
+                            if (randomBinary==0){
+                                //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte2.xml";
+                                archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte2.xml";
+                                refract= extraer_nivel_poder_xml(archivo_xml);
+                            }else{
+                                randomBinary=0;
+                            }
                             break;
                         case SDLK_3:
-                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte3.xml";
-                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte3.xml";
-                            delay= extraer_nivel_poder_xml(archivo_xml);
+                            if (randomBinary==1){
+                                //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte3.xml";
+                                archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte3.xml";
+                                delay= extraer_nivel_poder_xml(archivo_xml);
+                            }else{
+                                randomBinary=1;
+                            }
                             break;
                         case SDLK_4:
-                            //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte4.xml";
-                            archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte4.xml";
-                            delay= extraer_nivel_poder_xml(archivo_xml);
+                            if (randomBinary==1){
+                                //archivo_xml = "/home/vboxuser/Downloads/Battlespace/estrategias/parte4.xml";
+                                archivo_xml = "/home/nacho/Proyecto1/Proyecto-I-Battlespace/Battlespace/estrategias/parte1.xml";
+                                delay= extraer_nivel_poder_xml(archivo_xml);
+                            }else{
+                                randomBinary=1;
+                            }
                             break;
 
                         break;
