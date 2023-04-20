@@ -75,17 +75,21 @@ void game(int n){
     std::vector<Bullet> bullets;
     std::vector<Alien> aliens;
     
-    int refract, d =1; //variable de la dificultad por ahora
+    int refract=1; 
     int bullets_count = 0;
+    int d;
 
-    int array[2];
+    int array[3];
     array[0] = n;
     array[1] = bullets_count;
+    array[2]=d;
     int lista[array[0]];
 
+
+    if(array[0]==50){array[2]=1;}else if(array[0]==60){array[2]=2;}else if(array[0]==70){array[2]=3;}
     //Para llamar a la funcion bullets y crear la lista de balas(EL numero varia segun la dificultad)
     node *BulletsList= nullptr;
-    BulletsList=createBullets(20/d,BulletsList,d);
+    BulletsList=createBullets(array[0],BulletsList,d);
     // Para crear la Lista de RecoveryList, las balas recuperadas
     // Se necesita el nullprt para que la primer bala recuperada se guarde correctamente
     node *RecoveryList= nullptr;
@@ -135,22 +139,24 @@ void game(int n){
                     switch (event.key.keysym.sym) {
                         case SDLK_UP:
                             ship.moveUp();
-                            if(array[1] < array[0]*200 && bullets.size()<refract){
+                            if(array[1] < array[0]*2 && bullets.size()<refract){
                                 array[1]++;
-                                //shotBullet(BulletsList);
+                                //int dmgb=shotBullet(BulletsList);
+                                int dmgb=array[2];
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
-                                    ship.getRect().y + 32);
+                                    ship.getRect().y + 32,dmgb);
                             }
                             break;
                        case SDLK_DOWN:
                             ship.moveDown();
-                            if(array[1] < array[0]*200 && bullets.size()<refract){
+                            if(array[1] < array[0]*2 && bullets.size()<refract){
                                 array[1]++;
-                                //shotBullet(BulletsList);
+                                //int dmgb=shotBullet(BulletsList);
+                                int dmgb=array[2];
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
-                                    ship.getRect().y + 32);
+                                    ship.getRect().y + 32,dmgb);
                             }
                             break;
                          case SDLK_LEFT:
@@ -174,30 +180,35 @@ void game(int n){
         sscanf(data.c_str(), "%d,%d,%d,%d", &lecturaX, &lecturaY, &bt, &lecturaPot);
 
         // Imprimir los datos recibidos
+        /*
         std::cout << "LecturaX: " << lecturaX << std::endl;
         std::cout << "LecturaY: " << lecturaY << std::endl;
         std::cout << "BT: " << bt << std::endl;
         std::cout << "LecturaPot: " << lecturaPot << std::endl;
-    
+        */
         // Enviar datos a Arduino para encender el siete segmentos, buzzer y led
         int sieteSegmentos = 0;
         int buzzer = 0;
         int led = 0;
+        /*
         serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
         // Esperar un tiempo antes de leer los datos de nuevo
-        //SDL_Delay(50);
+        SDL_Delay(50);
+        */
         //Movimiento de la nave con el arduino
         if(lecturaY>600){ship.moveUp();}else if(lecturaY<400){ship.moveDown();}else{}
         //Disparo con el arduino
-        if(bt==0){if(bullets_count < n*200 && bullets.size()<refract){
-                                bullets_count++;
-                                //shotBullet(BulletsList);
+        if(bt==0){if(array[1] < array[0]*2 && bullets.size()<refract){
+                                array[1]++;
+                                //int dmgb=shotBullet(BulletsList);
+                                int dmgb=array[2];
                                 bullets.emplace_back(renderer, 
                                     ship.getRect().x + 64, 
-                                    ship.getRect().y + 32);}else{led=1;serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
+                                    ship.getRect().y + 32,dmgb);
+                            }else{led=1;serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;}
         }
-        //Velocidad de disparo con el arduino, en progreso
-        //if(){}
+        //Velocidad de disparo con el arduino
+        if(lecturaPot>0 && lecturaPot<400){refract=2;}else if(lecturaPot>400 && lecturaPot<600){refract=4;}else if(lecturaPot>600 && lecturaPot<800){refract=6;}else if(lecturaPot>800 && lecturaPot<100){refract=8;}
 
         if(array[0]==50 && SDL_GetTicks() - lastAlienTime >= array[0]*25){
             
@@ -211,7 +222,8 @@ void game(int n){
                     
                 if (currentTime - lastHordeTime >= hordeInterval) {
                         // Generar nueva horda
-
+                        sieteSegmentos=1;
+                        serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
                         int aliensPerHorde = 5 + (array[0] - 1) * 5; // Número de aliens por horda
                         for (int i = 0; i < aliensPerHorde && i < aliens.size(); i++) {
                             aliens[i].move();
@@ -286,16 +298,16 @@ void game(int n){
             bullet.draw(renderer);
             //verifica si una bala colisiono con un alien
                 for (auto& alien : aliens) {
-                    /**/
                     if (collision(bullets, aliens)) {
                         int buzzer=1;
                         serial_stream << sieteSegmentos << "," << buzzer << "," << led << std::endl;
                     }
                     }
                     if(bullet.isOffScreen()){
-                    RecoveryBullets(bullet.dmg,RecoveryList,d);
+                    RecoveryBullets(bullet.dmg,RecoveryList,array[0]);
                     //bullets.erase(bullets.begin());
                     addBullets(BulletsList,RecoveryList);
+                    array[1]-=1;
 
         }
         }
@@ -306,7 +318,7 @@ void game(int n){
 
 
         SDL_RenderPresent(renderer);
-        SDL_Delay(16);
+        //SDL_Delay(60);
     }
 
     SDL_DestroyRenderer(renderer);

@@ -6,14 +6,13 @@ using std::cout;
 //Para crear la lista de las balas principales
 node* createBullets(int c, node* BulletList,int d){
     int BulletsSize=c;
-    node *BulletsList= new node;
-    BulletsList= Create(999);
+    BulletList= Create(999);
     for(int i=0;i<=c;i++){
-        BulletsList=InsertAtEnd(BulletsList, 100/d); 
+        BulletList=InsertAtEnd(BulletList, 80/d); 
     }
-    Traverse(BulletsList);
+    Traverse(BulletList);
     std::cout<<"La cantidad de balas es: " <<BulletsSize << std::endl;
-    return BulletsList;
+    return BulletList;
 }
 
 //Para crear la Lista de las balas recuperdas
@@ -25,14 +24,14 @@ node *RecoveryBullets(int e,node* RecoveryList,int d){
         return RecoveryList;
     }else{
         RecoveryList=InsertAtEnd(RecoveryList,e/d);
-        printf("Se recupero la bala y fue agregada a \n la ultima posicion de la lista de balas recuperadas \n");
+        printf("Se recupero la bala y fue agregada a \n la ultima posicion de la lista de balas recuperadas \n");\
+        return RecoveryList;
     }
 }
-
 //Para agregar la primer bala de las balas recuperdas como la ultima bala a la lista de balas principales
 void addBullets(node*  BulletList,node* RecoveryList){
     cout<<"entro a addBullets \n";
-    if(Searchbullet(RecoveryList,1) != NULL){
+    if(Searchbullet(RecoveryList,1) != 0){
         cout<<"entro al if \n";
         BulletList=InsertAtEnd(BulletList,Searchbullet(RecoveryList,1));
         RecoveryList=DeleteAtPos(RecoveryList,2);
@@ -44,8 +43,8 @@ void addBullets(node*  BulletList,node* RecoveryList){
 }
 // Para conocer el dato/damage de la bala a disparar, si no quedaran retornaria 0 para acabar el juego
 int shotBullet(node* BulletsList){
-    if(Searchbullet(BulletsList,1)!= NULL){
-        int bullet=BulletsList->next->data;
+    if(Searchbullet(BulletsList,1)!= 0){
+        int bullet=Searchbullet(BulletsList,1);
         cout<<"el damage de la bala es"<< bullet;
         BulletsList=DeleteAtPos(BulletsList,2);
         return bullet;
@@ -64,7 +63,7 @@ int main(){
     //Se necesita el = para que una vez que entre por primera vez se pueda guardar globalmente +la variable y no siga entrando a cambiar la primera posicion de balas recuperdas
     RecoveryList=RecoveryBullets(20,RecoveryList,d);
     
-    Las lineas anteriores son importantes para crear las listas por primera vez, luego de esto las funciones no tienen problemas
+    //Las lineas anteriores son importantes para crear las listas por primera vez, luego de esto las funciones no tienen problemas
     
 
     //Despues que se entra por primera vez se puede usar de la siguente manera y no hay problemas
@@ -83,6 +82,12 @@ int main(){
    cout<<" \n Bala disparada \n ";
    Traverse(BulletsList);
    Traverse(RecoveryList);
+   shotBullet(BulletsList);
+   shotBullet(BulletsList);
+   for(int i=0;i<50;i++){
+    shotBullet(BulletsList);
+   }
+   Traverse(BulletsList);
 
     cout<<"\n";
     return 0;
